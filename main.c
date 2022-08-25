@@ -11,20 +11,9 @@
 int cpu_supports_rdrand();
 int rdrand_fill_array(uint64_t* array, int size);
 
-int main()
+void rdrand_sample()
 {
-
-	//hw1_tests();
-
-	//montgomery_reduction_tests();
-
-	//montgomery_wl_reduction_tests();
-
-	//montgomery_modmult_tests();
-
-	//sliding_window_exponentiation_tests();
-
-	/*const int size = 16;
+	const int size = 16;
 	uint32_t test_arr[size];
 	printf("stating\n");
 	printf("0x%X\n", cpu_supports_rdrand());
@@ -32,9 +21,26 @@ int main()
 	printf("res %d\n", res);
 
 	for(int i=0; i<size; i++)printf("0x%X\n", test_arr[i]);
-*/
+}
+
+
+int main()
+{
+
+	basic_tests();
+
+	montgomery_reduction_tests();
+
+	montgomery_wl_reduction_tests();
+
+	montgomery_modmult_tests();
+
+	sliding_window_exponentiation_tests();
+
+	rdrand_sample();
 
 	schoolbook_div_tests();
+
 	printf("Tests end. If no error prompts are given, all tests were successful\n");
 
 	return 0;

@@ -106,6 +106,7 @@ int schoolBookMult(uint32_t *p_res, uint32_t *p_a, uint32_t *p_b, unsigned int p
 	return 0;
 }
 
+
 /*
  * http://bioinfo.ict.ac.cn/~dbu/AlgorithmCourses/Lectures/Lec5-Fast-Division-Hasselstrom2003.pdf
  * algo 3.1
@@ -309,6 +310,8 @@ schoolBookDiv_end:
 
 	return l_ret;
 }
+
+
 
 int add_unequal(uint32_t *p_res, uint32_t *p_a, uint32_t *p_b, unsigned int p_pre_a, unsigned int p_pre_b)
 {
@@ -719,6 +722,9 @@ int twoLevelKaratsubaMult(uint32_t *p_res, uint32_t *p_a, uint32_t *p_b, unsigne
 	return 0;
 }
 
+/*
+Implements Barrett's reduction
+*/
 static int modmult_internal(uint32_t *p_res, uint32_t *p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision, int (*multiplier)(uint32_t*, uint32_t*, uint32_t*, unsigned int))
 {
 	uint32_t *l_TH, *l_T1H;
@@ -777,7 +783,7 @@ int modmult_schoolbook(uint32_t *p_res, uint32_t *p_mu, uint32_t *p_a, uint32_t 
 
 
 
-int mongtgomery_reduction(uint32_t *p_res, uint32_t *p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision)
+int montgomery_reduction(uint32_t *p_res, uint32_t *p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision)
 {
 	uint32_t *l_T, *l_T1, *l_T2, *l_C, *l_C1, *l_pExt, *l_Ccpy;
 
@@ -827,7 +833,7 @@ int mongtgomery_reduction(uint32_t *p_res, uint32_t *p_mu, uint32_t *p_a, uint32
 	return 0;
 }
 
-int mongtgomery_reduction_wordlevel(uint32_t *p_res, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision)
+int montgomery_reduction_wordlevel(uint32_t *p_res, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision)
 {
 	int i;
 	uint32_t *l_T, *l_T2Lptr, *l_T3, *l_TOrg, *l_Tp, *l_pExt;
@@ -908,7 +914,7 @@ static int shift_onedigitright_inplace(uint32_t *p_a, unsigned int p_precision)
 
 
 
-int mongtgomery_reduction_mult_wordlevel(uint32_t *p_res, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision)
+int montgomery_reduction_mult_wordlevel(uint32_t *p_res, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision)
 {
 	int i;
 	uint32_t *l_T, *l_TOrg, *l_ABI, *l_T1, *l_T3, *l_Tp, *l_pExt;
@@ -975,7 +981,7 @@ int mongtgomery_reduction_mult_wordlevel(uint32_t *p_res, uint32_t p_mu, uint32_
 	return 0;
 }
 
-int mongtgomery_modmult_wordlevel_reduce(uint32_t *p_res, uint32_t *p_rsq, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision)
+int montgomery_modmult_wordlevel_reduce(uint32_t *p_res, uint32_t *p_rsq, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision)
 {
 	int i;
 	uint32_t *l_aMonty, *l_bMonty, *l_MontyRes, *l_One;
@@ -989,12 +995,12 @@ int mongtgomery_modmult_wordlevel_reduce(uint32_t *p_res, uint32_t *p_rsq, uint3
 
 	l_aMonty = malloc(p_precision << 2);
 	l_bMonty = malloc(p_precision << 2);
-	mongtgomery_reduction_wordlevel(l_aMonty, p_mu, p_a, p_rsq, p_p, p_precision);
-	mongtgomery_reduction_wordlevel(l_bMonty, p_mu, p_b, p_rsq, p_p, p_precision);
+	montgomery_reduction_wordlevel(l_aMonty, p_mu, p_a, p_rsq, p_p, p_precision);
+	montgomery_reduction_wordlevel(l_bMonty, p_mu, p_b, p_rsq, p_p, p_precision);
 
 	l_MontyRes = malloc(p_precision << 2);
-	mongtgomery_reduction_wordlevel(l_MontyRes, p_mu, l_aMonty, l_bMonty, p_p, p_precision);
-	mongtgomery_reduction_wordlevel(p_res, p_mu, l_MontyRes, l_One, p_p, p_precision);
+	montgomery_reduction_wordlevel(l_MontyRes, p_mu, l_aMonty, l_bMonty, p_p, p_precision);
+	montgomery_reduction_wordlevel(p_res, p_mu, l_MontyRes, l_One, p_p, p_precision);
 
 	free(l_MontyRes);
 	free(l_bMonty);
@@ -1005,7 +1011,7 @@ int mongtgomery_modmult_wordlevel_reduce(uint32_t *p_res, uint32_t *p_rsq, uint3
 }
 
 
-int mongtgomery_modmult_wordlevel_multreduce(uint32_t *p_res, uint32_t *p_rsq, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision)
+int montgomery_modmult_wordlevel_multreduce(uint32_t *p_res, uint32_t *p_rsq, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision)
 {
 	int i;
 	uint32_t *l_aMonty, *l_bMonty, *l_MontyRes, *l_One;
@@ -1019,12 +1025,12 @@ int mongtgomery_modmult_wordlevel_multreduce(uint32_t *p_res, uint32_t *p_rsq, u
 
 	l_aMonty = malloc(p_precision << 2);
 	l_bMonty = malloc(p_precision << 2);
-	mongtgomery_reduction_mult_wordlevel(l_aMonty, p_mu, p_a, p_rsq, p_p, p_precision);
-	mongtgomery_reduction_mult_wordlevel(l_bMonty, p_mu, p_b, p_rsq, p_p, p_precision);
+	montgomery_reduction_mult_wordlevel(l_aMonty, p_mu, p_a, p_rsq, p_p, p_precision);
+	montgomery_reduction_mult_wordlevel(l_bMonty, p_mu, p_b, p_rsq, p_p, p_precision);
 
 	l_MontyRes = malloc(p_precision << 2);
-	mongtgomery_reduction_mult_wordlevel(l_MontyRes, p_mu, l_aMonty, l_bMonty, p_p, p_precision);
-	mongtgomery_reduction_mult_wordlevel(p_res, p_mu, l_MontyRes, l_One, p_p, p_precision);
+	montgomery_reduction_mult_wordlevel(l_MontyRes, p_mu, l_aMonty, l_bMonty, p_p, p_precision);
+	montgomery_reduction_mult_wordlevel(p_res, p_mu, l_MontyRes, l_One, p_p, p_precision);
 
 	free(l_MontyRes);
 	free(l_bMonty);
@@ -1062,11 +1068,11 @@ int sliding_window_exponentiation(uint32_t *p_res, uint32_t *p_rsq, unsigned int
 	}
 
 	// l_precomputationTable[0] is for g * R
-	mongtgomery_reduction_wordlevel(l_precomputationTable[0], p_mu, p_g, p_rsq, p_p, p_precision);
+	montgomery_reduction_wordlevel(l_precomputationTable[0], p_mu, p_g, p_rsq, p_p, p_precision);
 	PRINT_ARR_INT("g_monty", l_precomputationTable[0], p_precision);
 
 	// l_precomputationTable[1] is for g^2 * R
-	mongtgomery_reduction_wordlevel(l_precomputationTable[1], p_mu, l_precomputationTable[0], l_precomputationTable[0], p_p, p_precision);
+	montgomery_reduction_wordlevel(l_precomputationTable[1], p_mu, l_precomputationTable[0], l_precomputationTable[0], p_p, p_precision);
 	PRINT_ARR_INT("gsq_monty", l_precomputationTable[1], p_precision);
 
 #define S_gMonty l_precomputationTable[0]
@@ -1077,9 +1083,9 @@ int sliding_window_exponentiation(uint32_t *p_res, uint32_t *p_rsq, unsigned int
 	for(i = 2; i < l_rowNum; i++)
 	{
 		if (i == 2)
-			mongtgomery_reduction_wordlevel(l_precomputationTable[i], p_mu, S_gSqMonty, S_gMonty, p_p, p_precision);
+			montgomery_reduction_wordlevel(l_precomputationTable[i], p_mu, S_gSqMonty, S_gMonty, p_p, p_precision);
 		else
-			mongtgomery_reduction_wordlevel(l_precomputationTable[i], p_mu, l_precomputationTable[i-1], S_gSqMonty, p_p, p_precision);
+			montgomery_reduction_wordlevel(l_precomputationTable[i], p_mu, l_precomputationTable[i-1], S_gSqMonty, p_p, p_precision);
 
 		PRINT_ARR_INT("g_next", l_precomputationTable[i], p_precision);
 
@@ -1090,7 +1096,7 @@ int sliding_window_exponentiation(uint32_t *p_res, uint32_t *p_rsq, unsigned int
 
 	while(!(p_e[l_iWord] >> l_iBit))l_iBit--;
 
-	mongtgomery_reduction_wordlevel(l_w, p_mu, l_One, p_rsq, p_p, p_precision);
+	montgomery_reduction_wordlevel(l_w, p_mu, l_One, p_rsq, p_p, p_precision);
 
 	// defines the mapping between the window and l_precomputationTable
 	inline uint32_t * window2table(unsigned int p_window)
@@ -1164,12 +1170,12 @@ int sliding_window_exponentiation(uint32_t *p_res, uint32_t *p_rsq, unsigned int
 
 		for (i = 0; i < l_shiftAmount; i++)
 		{
-			mongtgomery_reduction_wordlevel(l_w, p_mu, l_w, l_w, p_p, p_precision);//take the square of l_w, l_shiftAmount times
+			montgomery_reduction_wordlevel(l_w, p_mu, l_w, l_w, p_p, p_precision);//take the square of l_w, l_shiftAmount times
 		}
 
 		if (l_window)
 		{
-			mongtgomery_reduction_wordlevel(l_w, p_mu, l_w, window2table(l_window), p_p, p_precision);
+			montgomery_reduction_wordlevel(l_w, p_mu, l_w, window2table(l_window), p_p, p_precision);
 		}
 
 
@@ -1179,7 +1185,7 @@ int sliding_window_exponentiation(uint32_t *p_res, uint32_t *p_rsq, unsigned int
 	PRINT_ARR_INT("res_monty", l_w, p_precision);
 
 
-	mongtgomery_reduction_wordlevel(p_res, p_mu, l_w, l_One, p_p, p_precision);
+	montgomery_reduction_wordlevel(p_res, p_mu, l_w, l_One, p_p, p_precision);
 
 	PRINT_ARR_INT("res", p_res, p_precision);
 

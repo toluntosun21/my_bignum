@@ -12,7 +12,7 @@ extern unsigned int g_coreMultNum;
 
 static uint32_t g_buffer[MAX_PRECISION << 1];//result buffer
 
-int hw1_tests(){
+int basic_tests(){
 	schoolBookMult(g_buffer, g_testvec1a, g_testvec1b, 2);
 	if (memcmp(g_buffer, g_testmultres1, 4 << 2))
 	{
@@ -233,7 +233,7 @@ int hw1_tests(){
 }
 
 #define TEST_MONTY_RED(ID) \
-	mongtgomery_reduction(g_buffer, g_montytestvec##ID##mu, g_montytestvec##ID##a, g_montytestvec##ID##b, g_montytestvec##ID##p, 32);\
+	montgomery_reduction(g_buffer, g_montytestvec##ID##mu, g_montytestvec##ID##a, g_montytestvec##ID##b, g_montytestvec##ID##p, 32);\
 	if (memcmp(g_buffer, g_montytestmodmultres##ID, 32 << 2))\
 	{\
 		printf("Error in test %d monty-reduce\n", ID);\
@@ -245,7 +245,7 @@ int montgomery_reduction_tests(){
 #endif
 	TEST_MONTY_RED(0)
 #ifdef COUNT_CORE_MULT
-	printf("HW2 Q1: Core mult num in montgomery reduction (using two level karatsuba internally): %u \n", g_coreMultNum);
+	printf("Core mult num in montgomery reduction (using two level karatsuba internally): %u \n", g_coreMultNum);
 	g_coreMultNum = 0;
 #endif
 	TEST_MONTY_RED(1)
@@ -352,7 +352,7 @@ int montgomery_reduction_tests(){
 }
 
 #define TEST_MONTY_RED_WORDLEVEL_R(ID) \
-	mongtgomery_reduction_wordlevel(g_buffer, g_montywltestvec##ID##mu[0], g_montywltestvec##ID##a, g_montywltestvec##ID##b, g_montywltestvec##ID##p, 32);\
+	montgomery_reduction_wordlevel(g_buffer, g_montywltestvec##ID##mu[0], g_montywltestvec##ID##a, g_montywltestvec##ID##b, g_montywltestvec##ID##p, 32);\
 	if (memcmp(g_buffer, g_montywltestmodmultres##ID, 32 << 2))\
 		{\
 		printf("Error in test %d monty-wordlevel-reduce\n", ID);\
@@ -360,7 +360,7 @@ int montgomery_reduction_tests(){
 
 
 #define TEST_MONTY_RED_WORDLEVEL_MR(ID) \
-		mongtgomery_reduction_mult_wordlevel(g_buffer, g_montywltestvec##ID##mu[0], g_montywltestvec##ID##a, g_montywltestvec##ID##b, g_montywltestvec##ID##p, 32);\
+		montgomery_reduction_mult_wordlevel(g_buffer, g_montywltestvec##ID##mu[0], g_montywltestvec##ID##a, g_montywltestvec##ID##b, g_montywltestvec##ID##p, 32);\
 	if (memcmp(g_buffer, g_montywltestmodmultres##ID, 32 << 2))\
 		{\
 		printf("Error in test %d monty-wordlevel(mult&reduce)-reduce\n", ID);\
@@ -372,7 +372,7 @@ int montgomery_wl_reduction_tests(){
 #endif
 	TEST_MONTY_RED_WORDLEVEL_R(0)
 #ifdef COUNT_CORE_MULT
-	printf("HW2 Q2: Core mult num in montgomery reduction word-level(reduction) (using two-level karatsuba internally): %u \n", g_coreMultNum);
+	printf("Core mult num in montgomery reduction word-level(reduction) (using two-level karatsuba internally): %u \n", g_coreMultNum);
 	g_coreMultNum = 0;
 #endif
 #ifdef COUNT_CORE_MULT
@@ -489,14 +489,14 @@ int montgomery_wl_reduction_tests(){
 
 
 #define TEST_MONTY_MODMULT_WL_MR(ID) \
-	mongtgomery_modmult_wordlevel_multreduce(g_buffer, g_montymodmulttestvec##ID##rsq, g_montymodmulttestvec##ID##mu[0], g_montymodmulttestvec##ID##a, g_montymodmulttestvec##ID##b, g_montymodmulttestvec##ID##p, 32);\
+	montgomery_modmult_wordlevel_multreduce(g_buffer, g_montymodmulttestvec##ID##rsq, g_montymodmulttestvec##ID##mu[0], g_montymodmulttestvec##ID##a, g_montymodmulttestvec##ID##b, g_montymodmulttestvec##ID##p, 32);\
 	if (memcmp(g_buffer, g_montymodmulttestres##ID, 32 << 2))\
 	{\
 		printf("Error in test %d monty mod mult wordlevel(mult&reduce)\n", ID);\
 	}\
 
 #define TEST_MONTY_MODMULT_WL_R(ID) \
-	mongtgomery_modmult_wordlevel_reduce(g_buffer, g_montymodmulttestvec##ID##rsq, g_montymodmulttestvec##ID##mu[0], g_montymodmulttestvec##ID##a, g_montymodmulttestvec##ID##b, g_montymodmulttestvec##ID##p, 32);\
+	montgomery_modmult_wordlevel_reduce(g_buffer, g_montymodmulttestvec##ID##rsq, g_montymodmulttestvec##ID##mu[0], g_montymodmulttestvec##ID##a, g_montymodmulttestvec##ID##b, g_montymodmulttestvec##ID##p, 32);\
 	if (memcmp(g_buffer, g_montymodmulttestres##ID, 32 << 2))\
 	{\
 		printf("Error in test %d monty mod mult wordlevel(reduce)\n", ID);\
@@ -509,7 +509,7 @@ int montgomery_modmult_tests(){
 #endif
 	TEST_MONTY_MODMULT_WL_MR(0)
 #ifdef COUNT_CORE_MULT
-	printf("HW Q3: Core mult num in montgomery wordlevel(mult&reduce) mod-multiplication: %u \n", g_coreMultNum);
+	printf("Core mult num in montgomery wordlevel(mult&reduce) mod-multiplication: %u \n", g_coreMultNum);
 	g_coreMultNum = 0;
 #endif
 

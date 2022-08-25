@@ -59,37 +59,34 @@ int modmult_schoolbook(uint32_t *p_res, uint32_t *p_mu, uint32_t *p_a, uint32_t 
 
 
 /*
- * HW2 Q1
  * The naive method
  */
-int mongtgomery_reduction(uint32_t *p_res, uint32_t *p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision);
+int montgomery_reduction(uint32_t *p_res, uint32_t *p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision);
 
 
 /*
- * HW2 Q2
  * Montgomery reduction (but not the multiplication inside) is implemented in word-level
  */
-int mongtgomery_reduction_wordlevel(uint32_t *p_res, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision);
+int montgomery_reduction_wordlevel(uint32_t *p_res, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision);
 
 /*
  * Montgomery reduction (including the multiplication inside) is implemented in word-level
  */
-int mongtgomery_reduction_mult_wordlevel(uint32_t *p_res, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision);
+int montgomery_reduction_mult_wordlevel(uint32_t *p_res, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision);
 
 
 /*
- * Utilizes mongtgomery_reduction_wordlevel internally
+ * Utilizes montgomery_reduction_wordlevel internally
  */
-int mongtgomery_modmult_wordlevel_reduce(uint32_t *p_res, uint32_t *p_rsq, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision);
+int montgomery_modmult_wordlevel_reduce(uint32_t *p_res, uint32_t *p_rsq, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision);
 
 /*
- * HW2 Q3
- * Utilizes mongtgomery_reduction_mult_wordlevel internally
+ * Utilizes montgomery_reduction_mult_wordlevel internally
  */
-int mongtgomery_modmult_wordlevel_multreduce(uint32_t *p_res, uint32_t *p_rsq, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision);
+int montgomery_modmult_wordlevel_multreduce(uint32_t *p_res, uint32_t *p_rsq, uint32_t p_mu, uint32_t *p_a, uint32_t *p_b, uint32_t *p_p, unsigned int p_precision);
 
 /*
- * Utilizes mongtgomery_modmult_wordlevel_reduce internally
+ * Utilizes montgomery_modmult_wordlevel_reduce internally
  * http://cacr.uwaterloo.ca/hac/about/chap14.pdf 14.85
  */
 int sliding_window_exponentiation(uint32_t *p_res, uint32_t *p_rsq, unsigned int p_k, uint32_t p_mu, uint32_t *p_g, uint32_t *p_e, uint32_t *p_p, unsigned int p_precision);
